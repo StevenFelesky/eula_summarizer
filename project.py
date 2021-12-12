@@ -57,7 +57,8 @@ sent_tokens=[[words for words in sent.split(' ') if words not in stop_words] for
 
 #### VECTORIZE TEXT
 
-w2v=Word2Vec(sent_tokens,vector_size=1,min_count=1,epochs=1000) #vectorize with word2vec
+w2v = gensim.models.Word2Vec.load('gensim-w2v-eula.model') #vectorize with word2vec
+#w2v=Word2Vec(sent_tokens,vector_size=1,min_count=1,epochs=1000) #vectorize with word2vec
 sent_vecs=[[w2v.wv[word][0] for word in words] for words in sent_tokens]
 
 max_len=max([len(tokens) for tokens in sent_tokens]) #make all sentence vector array the same size
@@ -83,7 +84,7 @@ sents_dict = {sent:scores[index] for index,sent in enumerate(sents)}
 
 #adjust rank values for sentences with useless data e.g. "you accept this agreement" or something of the like
 for sent in sents_dict.keys():
-	if re.search('agree|accept|agreement|license|terms and conditions', sent, re.IGNORECASE) != None:
+	if re.search('eula|agree|accept|agreement|license|terms and conditions', sent, re.IGNORECASE) != None:
 		sents_dict[sent] = sents_dict.get(sent) * 0.09
 
 top_sents = dict(sorted(sents_dict.items(), key=lambda x: x[1], reverse=True)[:8])
